@@ -1,0 +1,178 @@
+<!--David Bird x00148542-->
+<!DOCTYPE html>
+    <head>
+        <title>Docker Tutorial CA</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <header>
+            <h1>Docker Tutorial</h1>
+        </header>
+        <main>
+            <div class = "page">
+                <div class = "contents">
+                    <h1>Introduction:</h1>
+                    <p>Docker falls under platform as a service (PaaS) sofware that uses virtualization on the OS-level to 
+                    deliver software in packages called containers. Containers by themselves are isolated from one another 
+                    and hold their own software, libraries and configuration files.</p>
+                    <p>This tutorial will take you step by step through a series of labs completed for 4th year computer science,
+                        the work and code itself was done in Google Cloud Platform however, there is a setup guide to getting it running on your
+                        own laptop but the guide itself is tailored for Google Cloud Platform.
+                    </p>
+                </div>
+            </div>
+
+            <div class = "page">
+                <div class = "contents">
+                    <h3>Part 1: Setup</h3>
+                    <h4><b>Note: This part is not needed if using docker on an online command line such as Google Cloud Platform.</b></h4>
+                    <p>This first initial step is to just get docker running on your pc or mac.<br><br>
+                    1.) First, use this link to to download docker onto your device: <a href="https://www.docker.com/products/docker-desktop">Docker Download</a>.<br><br>
+                    2.) Next make sure to select the stable version for your preferred device and click on download.<br><br>
+                    3.) Follow the steps of the executable and restart your device.<br><br>
+                    4.) Run "docker" in your command line to make sure the it downloaded properly.</p>
+                </div>
+            </div>
+
+            <div class = "page">
+                <div class = "contents">
+                    <h3>Part 2: Creating our first Dockerfile</h3>
+                    <p>For this part we are going to build dockerfile and print out Hello World to the console. </p>
+                    <p>1.) Create a docker file using this name "Dockerfile.Dockerfile".</p>
+                    <p>2.) Enter in the following code into your docker file:.</p>
+
+                    <div class ="code">
+                        FROM ubuntu:latest
+                        <br>COPY script.sh /
+                        <br>RUN chmod u+x /script.sh
+                        <br>CMD ["/script.sh"]
+                    </div>
+
+                    <p>This code brings down the latest verison of ubuntu and brings inn the script.sh file. It then changes the script.sh file to be 
+                    an executable file and finally runs the file on the command line.</p>
+                
+                    <p>3.) Now we have to create the script.sh file, for this file we simply want it print "Hello World" so use this code: </p>
+
+                    <div class ="code">
+                         #!/bin/bash
+                        <br>echo "Hello World"
+                    </div>
+                    
+                    <p>4.) Now we can build the docker file with <b>"docker build ."</b> the full stop is the directory of the docker so make sure you are 
+                        in the same directory as the docker when running this file.
+                    </p>
+
+                    <p>5.) Finally we can now run the docker file. First enter <b>"docker images"</b> into the command line to get the id of the docker file.
+                        <br>Next enter <b>"docker run (image id)"</b> and you should see Hello World printed out.
+                    </p>
+
+                    <p><b>Reference:</b> <a href="https://docs.docker.com/develop/develop-images/baseimages/">Create Base Image</a> </p>
+                </div>
+            </div>
+
+            <div class ="page">
+                <div class ="contents">
+                    <h3>Part 3: Docker Pull</h3>
+                    <p>Here we are going to learn how to pull down container images and then host docker containers on your local machine.</p>
+                    <p>1.) First we need to download a docker image from docker hub using: </p>
+
+                    <div class ="code">
+                        <p>docker pull tudjburns/careless-banking:latest</p>
+                    </div>
+
+                    <p>2.) Use <b>"docker images"</b> to inspect the image again</p>
+                    <p>3.) If you try to run this docker image like the first image you will see that it is listening on port :8080
+                        but nothing will happen after than. That is because this is a long-lived http container. To run this container
+                        use: </p>
+
+                    <div class ="code">
+                        docker run -p 8090:8080 tudjburns/careless-banking:latest
+                    </div>
+                    
+                    <p>4.) Now it is running we want to view it, do to this, on the google console:</p>
+                    
+                    <div class="code"> 
+                        Select Web Preview -> Change Port -> 8090
+                    </div>
+                    
+                    <p>Finaly when you see the link, change "?authuser=0" to "getbalance"
+                        <br>Link should look similar to this:</p>
+                    <div class="code">
+                        <p>https://8090-cs-44288842940-default.europe-west1.cloudshell.dev/getbalance</p>
+                    </div>
+
+                    <p><b>Reference: </b> <a href="https://docs.docker.com/engine/reference/commandline/pull/">Docker Pull Guide</a></p>
+                </div>
+            </div>
+
+            <div class ="page">
+                <div class ="contents">
+                    <h3>Part 4: Docker Push</h3>
+                    <p>Here we will learn how to push container images to your own private google cloud repository.</p>
+                    <p>1.) First we will need your project ID, to find this follow these steps:</p>
+                        <div class="code">
+                            Go to Home Page -> Select the Project dropdown -> ID is to the right of project name.
+                        </div>
+                    <p>2.) Next tag the image with the repository we pulled earlier: </p>
+                    <div class="code">
+                        <p>docker tag fb794bc844ed eu.gcr.io/"YOUR-PROJECT-ID-HERE"/careless-banking:latest</p>
+                    </div>
+                    <p>Doing this tag will make it easier to reference.</p>
+
+                    <p>3.) Now we can push the image to our private repository: </p>
+                    <div class="code">
+                        <p>docker push eu.gcr.io/"YOUR-PROJECT-ID-HERE"/careless-banking:latest</p>
+                    </div>
+                    <p>4.) To see if you are successful you can run 
+                        <b>gcloud container images list --repository eu.gcr.io/"YOUR-PROJECT-ID-HERE"</b>
+                        And you should see careless-banking in the output if it was successful.</p>
+                </div>
+
+                <p><b>Reference: </b><a href="https://docs.docker.com/engine/reference/commandline/push/">Docker Push Guide</a></p>
+            </div>
+
+            <div class ="page">
+                <div class ="contents">
+                    <h3>Part 5: Docker Server/ CA1</h3>
+                    <p>This Part will show you how to create a python 3 docker image that runs the python http server module. This sections is very
+                        similar to part 2 but the contents of the docker will differ.
+                    </p>
+                    <p>1.) First will be creating the Dockerfile like last time using this code: </p>
+                        <div class="code">
+                            <p>FROM python:3<br>
+                            WORKDIR /project<br>
+                            COPY index.html ./<br>
+                            COPY style.css ./<br>
+                            CMD python -m http.server 8080</p>
+                        </div>
+                    <p>This code will bring down python 3 to the docker image, create a working directory with the <b>WORKDIR</b> command 
+                    and bring in the html and css file into the docker image <b>(Note: these files should be populated before hand)</b>. 
+                    The final line of the docker will run the server on port 8080.</p>
+                    <p>2.) Now to run and preview the html page it is similar to how part 3 execpt this time we will use the the docker id.<br>
+                        Now use <b>"docker images"</b> to find the id for the docker and run this line of code.</p>
+                        <div class="code">
+                            docker run -d -p 8090:8080 "docker id"
+                        </div>
+                    <p>3.) To preview the port it will be the same steps in part 3.</p>
+
+                    <p><b>Reference: </b><a href="https://hub.docker.com/_/python">Docker Python Guide</a>. </p>
+                </div>
+            </div>
+
+            <div class="page">
+                <div class="contents">
+                    <h3>Part 6: How I completed this CA</h3>
+                    <p>For this CA I split it up into different parts as it would only make it messy if I tried to do it all at the same time.
+                        I split it up as html and docker. 
+                        <br><br>1.) I started with working on my html page first because this will also bring me back through all
+                        the labs we had done for docker and give me a better understanding for it before I try to host the server on docker. This proved
+                        very useful when I started on setting up the docker as I had 80% of the knowledge to get it working before I started it. 
+                        <br><br>2.) After the html was working I started working on the docker. Fortunately on the docker hub site there is a guide to python 
+                        that I put in part 4 which is the only guide I needed to get it running.
+                        <br><br>3.) After that I followed my guide to push up my docker images and lastly did the 10 minute video presentation when all other work was done.
+                    </p>                    
+                </div>
+            </div>
+        </main>
+    </body>
+</html>
